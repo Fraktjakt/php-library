@@ -1,3 +1,20 @@
+# Test PHP Code
+
+1. Make sure PHP is installed on your computer.
+
+2. Open a command line interface.
+
+3. Navigate to the examples/ folder, setting it to currrent working directory.
+
+4. Type any of the commands below to execute a script and see the result:
+
+    php Order.php
+    php Query.php
+    php Requery.php
+    php Shipment.php
+    php Trace.php
+
+
 # Social Coding
 
   [Github Repository](https://www.github.com/Fraktjakt/php-library)
