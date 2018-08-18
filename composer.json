@@ -1,0 +1,28 @@
+{
+    "name": "fraktjakt/library",
+    "description": "PHP integration library for Fraktjakt API.",
+    "homepage": "https://www.fraktjakt.se/",
+    "keywords": ["fraktjakt"],
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "T. Almroth",
+            "email": "info@tim-international.net",
+            "homepage": "https://www.tim-international.net/"
+        }
+    ],
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Fraktjakt\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Fraktjakt\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.4"
+    }
+}
