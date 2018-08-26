@@ -49,7 +49,7 @@ class Client {
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
 
-  // Rewrite commodities depth for XML because arrays can not have duplicate keys
+  // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
       $commodities = array();
       foreach ($request['commodities'] as $commodity) {
@@ -57,9 +57,10 @@ class Client {
           'commodity' => $commodity,
         );
       }
+      $request['commodities'] = $commodities;
     }
 
-  // Rewrite parcels depth for XML because arrays can not have duplicate keys
+  // Rewrite parcels depth for XML because arrays do not have duplicate keys
     if (!empty($request['parcels'])) {
       $parcels = array();
       foreach ($request['parcels'] as $parcel) {
@@ -67,6 +68,7 @@ class Client {
           'parcel' => $parcel,
         );
       }
+      $request['parcels'] = $parcels;
     }
 
     $request = $this->_arrayToXml($request, 'OrderSpecification', $encoding);
@@ -100,6 +102,17 @@ class Client {
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
 
+  // Rewrite parcels depth for XML because arrays do not have duplicate keys
+    if (!empty($request['parcels'])) {
+      $parcels = array();
+      foreach ($request['parcels'] as $parcel) {
+        $parcels[] = array(
+          'parcel' => $parcel,
+        );
+      }
+      $request['parcels'] = $parcels;
+    }
+
     $request = $this->_arrayToXml($request, 'shipment', $encoding);
 
     if ($this->_testMode) {
@@ -114,6 +127,21 @@ class Client {
     ), '', '&');
 
     $result = $this->_call('POST', $url, $request);
+
+  // Rewrite shipping_products depth for Array because arrays cannot have duplicate keys
+    if (isset($result['shipping_products'])) {
+      $shipping_products = array();
+      if (!empty($result['shipping_products']['shipping_product'])) {
+        foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
+          $shipping_products[] = $shipping_product;
+        }
+      }
+      $result['shipping_products'] = $shipping_products;
+    }
+
+    if (empty($result['shipping_products'])) {
+      throw new \Exception('No shipping products found');
+    }
 
     return array(
       'status' => 'ok',
@@ -154,7 +182,7 @@ class Client {
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
 
-  // Rewrite commodities depth for XML because arrays can not have duplicate keys
+  // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
       $commodities = array();
       foreach ($request['commodities'] as $commodity) {
@@ -162,6 +190,7 @@ class Client {
           'commodity' => $commodity,
         );
       }
+      $request['commodities'] = $commodities;
     }
 
     $request = $this->_arrayToXml($request, 'CreateShipment', $encoding);
