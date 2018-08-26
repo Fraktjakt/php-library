@@ -303,11 +303,18 @@ class Client {
       'body' => $response_body,
     );
 
+    parse_str($data, $request_object);
+    if (isset($request_object['xml'])) {
+      $xml = preg_replace('#(\R+)#', "\r\n", urldecode($request_object['xml']));
+    }
+
     $this->_lastLog = (
-      "## [". date('Y-m-d H:i:s', $this->_lastRequest['timestamp']) ."] Request ##############################\r\n\r\n" .
+      "## XML Request Object ##############################\r\n\r\n" .
+      ((!empty($xml)) ? $xml : '(Null)') . "\r\n\r\n" .
+      "## [". date('Y-m-d H:i:s', $this->_lastRequest['timestamp']) ."] HTTP Request ##############################\r\n\r\n" .
       $this->_lastRequest['head']."\r\n" .
       $this->_lastRequest['body']."\r\n\r\n" .
-      "## [". date('Y-m-d H:i:s', $this->_lastResponse['timestamp']) ."] Response — ". (float)$this->_lastResponse['bytes'] ." bytes transferred in ". (float)$this->_lastResponse['duration'] ." s ##############################\r\n\r\n" .
+      "## [". date('Y-m-d H:i:s', $this->_lastResponse['timestamp']) ."] HTTP Response — ". number_format($this->_lastResponse['bytes'], 0, '.', ',') ." bytes transferred in ". (float)$this->_lastResponse['duration'] ." s ##############################\r\n\r\n" .
       $this->_lastResponse['head']."\r\n" .
       $this->_lastResponse['body']."\r\n\r\n"
     );
