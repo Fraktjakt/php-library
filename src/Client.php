@@ -90,6 +90,10 @@ class Client {
       throw new \Exception('Missing shipment ID in result');
     }
 
+    if (empty($result['order_id'])) {
+      throw new \Exception('Missing order ID in result');
+    }
+
     return array(
       'status' => 'ok',
       'link' => ($this->_testMode ? self::SERVER_TEST : self::SERVER_PRODUCTION) . '/shipments/show/'. $result['shipment_id'] . '?access_code=' . $result['access_code'],
