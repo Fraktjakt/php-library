@@ -1,9 +1,12 @@
 {
     "name": "fraktjakt/library",
+    "version": "1.0.0",
     "description": "PHP integration library for Fraktjakt API.",
     "homepage": "https://www.fraktjakt.se/",
     "keywords": ["fraktjakt"],
     "license": "proprietary",
+    "type": "library",
+    "readme": "README.md",
     "authors": [
         {
             "name": "T. Almroth",
@@ -11,8 +14,16 @@
             "homepage": "https://www.tim-international.net/"
         }
     ],
+    "support": {
+        "email": "info@fraktjakt.se",
+        "source": "https://github.com/Fraktjakt/php-library/"
+        "issues": "https://github.com/Fraktjakt/php-library/issues"
+    },
     "type": "library",
     "autoload": {
+        "psr-0": {
+            "Fraktjakt\\": "src/"
+        },
         "psr-4": {
             "Fraktjakt\\": "src/"
         }
