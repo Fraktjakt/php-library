@@ -40,7 +40,7 @@ class Client {
   }
 
   public function getLastLog() {
-    return $this->_lastLog;
+    return !empty($this->_lastLog) ? $this->_lastLog : '## (Null) ##';
   }
 
   public function Order(array $request, string $encoding = 'UTF-8') {
