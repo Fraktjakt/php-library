@@ -485,10 +485,20 @@ class Client {
 
     $this->_arrayToXmlIterator($array, $xml);
 
+    libxml_use_internal_errors(true);
+
     $dom = new \DOMDocument('1.0');
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;
     $dom->loadXML($xml->asXML());
+
+    if ($errors = libxml_get_errors()) {
+      foreach ($errors as $error) {
+        libxml_clear_errors();
+        throw new \Exception('Error while encoding XML:'. $error->message);
+      }
+    }
+
     return $dom->saveXML();
   }
 
