@@ -353,10 +353,10 @@ class Client {
       $out .= "$key: $value\r\n";
     }
 
-    $found_body = false;
-    $response_headers = '';
-    $response_body = '';
-    $microtime_start = microtime(true);
+    $bodyFound = false;
+    $responseHeaders = '';
+    $responseBody = '';
+    $microtimeStart = microtime(true);
 
     $this->_lastRequest = array(
       'timestamp' => time(),
@@ -374,37 +374,37 @@ class Client {
     fwrite($socket, $data);
 
     while (!feof($socket)) {
-      if ((microtime(true) - $microtime_start) > $this->_timeout) {
+      if ((microtime(true) - $microtimeStart) > $this->_timeout) {
        throw new \Exception('Timout during retrieval');
        return false;
       }
 
       $line = fgets($socket);
       if ($line == "\r\n") {
-       $found_body = true;
+       $bodyFound = true;
        continue;
       }
 
-      if ($found_body) {
-       $response_body .= $line;
+      if ($bodyFound) {
+       $responseBody .= $line;
        continue;
       }
 
-      $response_headers .= $line;
+      $responseHeaders .= $line;
     }
 
     fclose($socket);
 
-    preg_match('#HTTP/\d(\.\d)?\s(\d{3})#', $response_headers, $matches);
+    preg_match('#HTTP/\d(\.\d)?\s(\d{3})#', $responseHeaders, $matches);
     $status_code = $matches[2];
 
     $this->_lastResponse = array(
       'timestamp' => time(),
       'status_code' => $status_code,
-      'head' => $response_headers,
-      'duration' => round(microtime(true) - $microtime_start, 3),
-      'bytes' => strlen($response_headers . "\r\n" . $response_body),
-      'body' => $response_body,
+      'head' => $responseHeaders,
+      'duration' => round(microtime(true) - $microtimeStart, 3),
+      'bytes' => strlen($responseHeaders . "\r\n" . $responseBody),
+      'body' => $responseBody,
     );
 
     parse_str($data, $request_object);
@@ -423,12 +423,12 @@ class Client {
       $this->_lastResponse['body']."\r\n\r\n"
     );
 
-    if (empty($response_body)) {
+    if (empty($responseBody)) {
       throw new \Exception('No response from remote machine');
     }
 
   // Parse XML result
-    if (!$xml = @simplexml_load_string($response_body, 'SimpleXMLElement', LIBXML_NOCDATA)) {
+    if (!$xml = @simplexml_load_string($responseBody, 'SimpleXMLElement', LIBXML_NOCDATA)) {
       throw new \Exception('Invalid response from remote machine');
     }
 
