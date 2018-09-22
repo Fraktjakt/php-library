@@ -99,6 +99,18 @@ class Client {
 
   public function Query(array $request, string $encoding = 'UTF-8') {
 
+    if (empty($request['address_to']['street_address_1'])) {
+      throw new Exception('You must provide an address for delivery');
+    }
+
+    if (empty($request['address_to']['postal_code'])) {
+      throw new Exception('You must provide a postal code for delivery');
+    }
+
+    if (empty($request['address_to']['country_code'])) {
+      throw new Exception('You must provide a country for delivery');
+    }
+
     $request['consignor']['api_version'] = '3.0.0';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
