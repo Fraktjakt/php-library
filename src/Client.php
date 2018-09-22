@@ -242,6 +242,23 @@ class Client {
     ) + $result;
   }
 
+  public function ConvertLength($value, $from, $to) {
+
+    $units = [
+      'cm' => 1,
+      'mm' => 10,
+      'in' => 0.3937,
+    ];
+
+    if ($from == $to) return $value;
+
+    if (!isset($units[$from])) throw new \Exception("Cannot convert from length unit $from");
+    if (!isset($units[$to])) throw new \Exception("Cannot convert from length unit $to");
+
+
+    return $value * ($units[$to] / $units[$from]);
+  }
+
   public function ConvertWeight($value, $from, $to) {
 
     $units = [
