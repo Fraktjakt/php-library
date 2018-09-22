@@ -8,8 +8,8 @@
 class Client {
 
   const VERSION  = '1.0.0';
-  const SERVER_TEST  = 'https://api2.fraktjakt.se';
-  const SERVER_PRODUCTION  = 'https://www.fraktjakt.se';
+  const SERVER_TEST  = 'https://testapi.fraktjakt.se';
+  const SERVER_PRODUCTION  = 'https://api.fraktjakt.se';
 
   private $_consignorId;
   private $_consignorKey;
