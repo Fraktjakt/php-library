@@ -242,6 +242,57 @@ class Client {
     ) + $result;
   }
 
+  public function CalculatePackage($items) {
+
+    $package = array(
+      'weight' => 0,
+      'dimensions' => array(0, 0, 0),
+      'weight_unit' => 'kg',
+      'length_unit' => 'cm',
+    );
+
+    foreach ($items as $item) {
+
+      if (!empty($item['weight_unit'])) {
+        $item['weight'] = $this->ConvertWeight($item['weight'], $item['weight_unit'], $package['weight_unit']);
+      }
+
+      if (!empty($item['length_unit'])) {
+        $item['length'] = $this->ConvertLength($item['length'], $item['length_unit'], $package['length_unit']);
+        $item['width'] = $this->ConvertLength($item['width'], $item['length_unit'], $package['length_unit']);
+        $item['height'] = $this->ConvertLength($item['height'], $item['length_unit'], $package['length_unit']);
+      }
+
+      for ($i=0; $i < $item['quantity']; $i++) {
+
+        $package['weight'] += $item['weight'];
+
+        $item_dimensions = array(
+          $item['length'],
+          $item['width'],
+          $item['height'],
+        );
+
+        rsort($item_dimensions, SORT_NUMERIC);
+
+        $package['dimensions'][2] += $item_dimensions[2];
+        if ((string)$item_dimensions[1] > (string)$package['dimensions'][1]) $package['dimensions'][1] = $item_dimensions[1];
+        if ((string)$item_dimensions[0] > (string)$package['dimensions'][0]) $package['dimensions'][0] = $item_dimensions[0];
+
+        rsort($package['dimensions'], SORT_NUMERIC);
+      }
+    }
+
+    $package['weight'] = (float)round($package['weight'], 3);
+    $package['length'] = (float)round($package['dimensions'][0], 2);
+    $package['width'] = (float)round($package['dimensions'][1], 2);
+    $package['height'] = (float)round($package['dimensions'][2], 2);
+
+    unset($package['dimensions']);
+
+    return $package;
+  }
+
   public function ConvertLength($value, $from, $to) {
 
     $units = [
