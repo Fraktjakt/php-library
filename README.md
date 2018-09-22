@@ -14,23 +14,36 @@ Manually include Client.php in your script before initiating the client.
 
 ## Example Code (More examples in the examples/ folder)
 
-    require_once 'path/to/Client.php';
+```
+  require_once 'path/to/Client.php';
 
-    try {
+  try {
 
-      $fraktjakt = new Fraktjakt\Client();
+    $fraktjakt = new Fraktjakt\Client();
 
-      $fraktjakt->setConsignorId(12345)
-                ->setConsignorKey('0123456789abcdef0123456789abcdef')
-                ->setTestMode(true);
+    $fraktjakt->setConsignorId(12345)
+              ->setConsignorKey('0123456789abcdef0123456789abcdef')
+              ->setTestMode(true);
 
-      $request = array(
-        // ...
-      );
+    $request = array(
+      // ...
+    );
 
-      $result = $fraktjakt->Query($request);
+    $result = $fraktjakt->Query($request);
 
-    } catch(Exception $e) {
-      die('An error occured: '. $e->getMessage() . PHP_EOL . PHP_EOL
-        . $fraktjakt->getLastLog());
-    }
+  } catch(Exception $e) {
+    die('An error occured: '. $e->getMessage() . PHP_EOL . PHP_EOL
+      . $fraktjakt->getLastLog());
+  }
+```
+
+
+## Testing
+
+1. Make sure you have PHP installed on your machine.
+
+2. Open a command-line interface and navigate to the examples/ folder.
+
+3. Run the following command in your command-line interface:
+
+    php ExampleFile.php
