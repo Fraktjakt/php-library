@@ -242,6 +242,23 @@ class Client {
     ) + $result;
   }
 
+  public function ConvertWeight($value, $from, $to) {
+
+    $units = [
+      'kg' => 1,
+      'g' => 1000,
+      'lb' => 2.2046,
+      'oz' => 35.274,
+    ];
+
+    if ($from == $to) return $value;
+
+    if (!isset($units[$from])) throw new \Exception("Cannot convert from weight unit $from");
+    if (!isset($units[$to])) throw new \Exception("Cannot convert from weight unit $to");
+
+    return $value * ($units[$to] / $units[$from]);
+  }
+
   private function _call(string $method, string $url, string $data = null) {
 
     $this->_lastRequest = array();
