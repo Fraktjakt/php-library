@@ -94,10 +94,7 @@ class Client {
       throw new \Exception('Missing order ID in result');
     }
 
-    return array(
-      'status' => 'ok',
-      'link' => ($this->_testMode ? self::SERVER_TEST : self::SERVER_PRODUCTION) . '/shipments/show/'. $result['shipment_id'] . '?access_code=' . $result['access_code'],
-    ) + $result;
+    return $result;
   }
 
   public function Query(array $request, string $encoding = 'UTF-8') {
@@ -147,10 +144,7 @@ class Client {
       throw new \Exception('No shipping products found');
     }
 
-    return array(
-      'status' => 'ok',
-      'link' => ($this->_testMode ? self::SERVER_TEST : self::SERVER_PRODUCTION) . '/shipments/show/'. $result['id'] . '?access_code=' . $result['access_code'],
-    ) + $result;
+    return $result;
   }
 
   public function Requery(array $request, string $encoding = 'UTF-8') {
@@ -174,10 +168,7 @@ class Client {
 
     $result = $this->_call('POST', $url, $request);
 
-    return array(
-      'status' => 'ok',
-      'link' => ($this->_testMode ? self::SERVER_TEST : self::SERVER_PRODUCTION) . '/shipments/show/'. $result['id'] . '?access_code=' . $result['access_code'],
-    ) + $result;
+    return $result;
   }
 
   public function Shipment(array $request, string $encoding = 'UTF-8') {
@@ -216,10 +207,7 @@ class Client {
       throw new \Exception('Missing shipment ID in result');
     }
 
-    return array(
-      'status' => 'ok',
-      'link' => ($this->_testMode ? self::SERVER_TEST : self::SERVER_PRODUCTION) . '/shipments/show/'. $result['shipment_id'] . '?access_code=' . $result['access_code'],
-    ) + $result;
+    return $result;
   }
 
   public function Trace(array $request, string $encoding = 'UTF-8') {
@@ -237,9 +225,7 @@ class Client {
 
     $result = $this->_call('POST', $url, $request);
 
-    return array(
-      'status' => 'ok',
-    ) + $result;
+    return $result;
   }
 
   public function CalculatePackage($items) {
