@@ -180,6 +180,21 @@ class Client {
 
     $result = $this->_call('POST', $url, $request);
 
+  // Rewrite shipping_products depth for Array because arrays cannot have duplicate keys
+    if (isset($result['shipping_products'])) {
+      $shipping_products = array();
+      if (!empty($result['shipping_products']['shipping_product'])) {
+        foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
+          $shipping_products[] = $shipping_product;
+        }
+      }
+      $result['shipping_products'] = $shipping_products;
+    }
+
+    if (empty($result['shipping_products'])) {
+      throw new \Exception('No shipping products found');
+    }
+
     return $result;
   }
 
