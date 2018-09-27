@@ -8,11 +8,16 @@
 
 4. Type any of the commands below to execute a script and see the result:
 
+
+```
+    php CalculatePackage.php
     php Order.php
     php Query.php
     php Requery.php
     php Shipment.php
     php Trace.php
+```
+
 
 
 # Social Coding
