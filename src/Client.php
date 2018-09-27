@@ -252,6 +252,24 @@ class Client {
 
     $result = $this->_call('POST', $url, $request);
 
+  // Rewrite shipping_states depth for Array because arrays cannot have duplicate keys
+    if (isset($result['shipping_states'])) {
+      $shipping_states = array();
+      if (!empty($result['shipping_states']['shipping_state'])) {
+
+       // Future proof for case of multiple statuses (sequentially indexed)
+        if (!array_filter(array_keys($result['shipping_states']['shipping_state']), 'is_string')) {
+          foreach ($result['shipping_states']['shipping_state'] as $shipping_state) {
+            $shipping_states[] = $shipping_state;
+          }
+        } else {
+          $shipping_states[] = $result['shipping_states']['shipping_state'];
+        }
+
+      }
+      $result['shipping_states'] = $shipping_states;
+    }
+
     return $result;
   }
 
