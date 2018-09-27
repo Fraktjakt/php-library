@@ -36,13 +36,11 @@
       ),
       'parcels' => array(
         array(
-          'parcel' => array(
-            'weight' => 1,
-            'length' => 30,
-            'width' => 20,
-            'height' => 10,
-          ),
-        )
+          'weight' => 1,
+          'length' => 30,
+          'width' => 20,
+          'height' => 10,
+        ),
       ),
     );
 
