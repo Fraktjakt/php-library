@@ -62,9 +62,9 @@
 
     $result = $fraktjakt->Order($request);
 
+    var_dump($result);
+
   } catch(Exception $e) {
     die('An error occured: '. $e->getMessage() . PHP_EOL . PHP_EOL
       . $fraktjakt->getLastLog());
   }
-
-  var_dump($result);
