@@ -3,13 +3,31 @@
 This is a PHP library for machine-to-machine communication with Fraktjakt.
 
 
-## Install
+## Use With Composer
+
+(We will just assume you have composer installed for your project)
+
+1. Open a command-line interface and navigate to your project folder.
+
+2. Run the following command in your command-line interface:
+
+    composer require fraktjakt/library
+
+Composer will now autoload Client.php when you create the class object:
+
+```
+    $fraktjakt = new Fraktjakt\Client();
+```
+
+## Use Without Composer
 
 Manually include Client.php in your script before initiating the client.
 
-    require_once 'path/to/Client.php';
+```
+   require_once 'path/to/Client.php';
 
-    $fraktjakt = new Fraktjakt\Client();
+   $fraktjakt = new Fraktjakt\Client();
+```
 
 
 ## Example Code (More examples in the examples/ folder)
