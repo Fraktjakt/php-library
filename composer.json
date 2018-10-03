@@ -16,7 +16,7 @@
     ],
     "support": {
         "email": "info@fraktjakt.se",
-        "source": "https://github.com/Fraktjakt/php-library/"
+        "source": "https://github.com/Fraktjakt/php-library/",
         "issues": "https://github.com/Fraktjakt/php-library/issues"
     },
     "type": "library",
