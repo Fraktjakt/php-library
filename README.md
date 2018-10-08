@@ -16,7 +16,7 @@ This is a PHP library for machine-to-machine communication with Fraktjakt.
 Composer will now autoload Client.php when you create the class object:
 
 ```
-    $fraktjakt = new Fraktjakt\Client();
+    $fraktjakt = new \Fraktjakt\Client();
 ```
 
 ## Use Without Composer
