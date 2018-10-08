@@ -4,7 +4,7 @@
 
   try {
 
-    $fraktjakt = new Fraktjakt\Client();
+    $fraktjakt = new \Fraktjakt\Client();
 
     $items = array(
       array(

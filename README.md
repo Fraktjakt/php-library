@@ -26,7 +26,7 @@ Manually include Client.php in your script before initiating the client.
 ```
    require_once 'path/to/Client.php';
 
-   $fraktjakt = new Fraktjakt\Client();
+   $fraktjakt = new \Fraktjakt\Client();
 ```
 
 
@@ -37,7 +37,7 @@ Manually include Client.php in your script before initiating the client.
 
   try {
 
-    $fraktjakt = new Fraktjakt\Client();
+    $fraktjakt = new \Fraktjakt\Client();
 
     $fraktjakt->setConsignorId(12345)
               ->setConsignorKey('0123456789abcdef0123456789abcdef')
