@@ -11,7 +11,7 @@ This is a PHP library for machine-to-machine communication with Fraktjakt.
 
 2. Run the following command in your command-line interface:
 
-    composer require fraktjakt/library
+    composer require fraktjakt/library:dev-master
 
 Composer will now autoload Client.php when you create the class object:
 
