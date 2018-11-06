@@ -45,6 +45,10 @@ class Client {
 
   public function Order(array $request, string $encoding = 'UTF-8') {
 
+    if (isset($request['shipping_product_id']) && $request['shipping_product_id'] == '0') {
+      throw new \Exception('You cannot place orders for custom shipping products (shipping_product_id: 0)');
+    }
+
     $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
