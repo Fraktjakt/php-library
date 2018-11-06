@@ -45,7 +45,7 @@ class Client {
 
   public function Order(array $request, string $encoding = 'UTF-8') {
 
-    $request['consignor']['api_version'] = '3.1.1';
+    $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
 
@@ -111,7 +111,7 @@ class Client {
       throw new \Exception('You must provide a country for delivery');
     }
 
-    $request['consignor']['api_version'] = '3.1.1';
+    $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
 
@@ -161,7 +161,7 @@ class Client {
 
   public function Requery(array $request, string $encoding = 'UTF-8') {
 
-    $request['consignor']['api_version'] = '3.1.1';
+    $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
 
@@ -200,7 +200,7 @@ class Client {
 
   public function Shipment(array $request, string $encoding = 'UTF-8') {
 
-    $request['consignor']['api_version'] = '3.1.1';
+    $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
 
