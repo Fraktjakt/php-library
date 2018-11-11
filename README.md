@@ -24,9 +24,9 @@ Composer will now autoload Client.php when you create the class object:
 Manually include Client.php in your script before initiating the client.
 
 ```
-   require_once 'path/to/Client.php';
+    require_once 'path/to/Client.php';
 
-   $fraktjakt = new \Fraktjakt\Client();
+    $fraktjakt = new \Fraktjakt\Client();
 ```
 
 
