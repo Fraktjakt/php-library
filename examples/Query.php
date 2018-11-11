@@ -42,6 +42,7 @@
           'height' => 10,
         ),
       ),
+      'shipper_info' => 1,
     );
 
     $result = $fraktjakt->Query($request);
