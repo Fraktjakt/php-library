@@ -49,9 +49,12 @@ class Client {
       throw new \Exception('You cannot place orders for custom shipping products (shipping_product_id: 0)');
     }
 
-    $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
+
+    if (empty($request['consignor']['api_version'])) {
+      $request['consignor']['api_version'] = '3.2';
+    }
 
   // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
@@ -115,9 +118,12 @@ class Client {
       throw new \Exception('You must provide a country for delivery');
     }
 
-    $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
+
+    if (empty($request['consignor']['api_version'])) {
+      $request['consignor']['api_version'] = '3.2';
+    }
 
   // Rewrite parcels depth for XML because arrays do not have duplicate keys
     if (!empty($request['parcels'])) {
@@ -165,9 +171,12 @@ class Client {
 
   public function Requery(array $request, string $encoding = 'UTF-8') {
 
-    $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
+
+    if (empty($request['consignor']['api_version'])) {
+      $request['consignor']['api_version'] = '3.2';
+    }
 
     $request = $this->_arrayToXml($request, 'shipment', $encoding);
 
@@ -204,9 +213,12 @@ class Client {
 
   public function Shipment(array $request, string $encoding = 'UTF-8') {
 
-    $request['consignor']['api_version'] = '3.2';
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
+
+    if (empty($request['consignor']['api_version'])) {
+      $request['consignor']['api_version'] = '3.2';
+    }
 
   // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
