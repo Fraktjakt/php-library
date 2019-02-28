@@ -155,8 +155,12 @@ class Client {
     if (isset($result['shipping_products'])) {
       $shipping_products = array();
       if (!empty($result['shipping_products']['shipping_product'])) {
-        foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
-          $shipping_products[] = $shipping_product;
+        if (count($result['shipping_products']) > 1) {
+          foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
+            $shipping_products[] = $shipping_product;
+          }
+        } else {
+          $shipping_products[] = $result['shipping_products']['shipping_product'];
         }
       }
       $result['shipping_products'] = $shipping_products;
@@ -197,8 +201,12 @@ class Client {
     if (isset($result['shipping_products'])) {
       $shipping_products = array();
       if (!empty($result['shipping_products']['shipping_product'])) {
-        foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
-          $shipping_products[] = $shipping_product;
+        if (count($result['shipping_products']) > 1) {
+          foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
+            $shipping_products[] = $shipping_product;
+          }
+        } else {
+          $shipping_products[] = $result['shipping_products']['shipping_product'];
         }
       }
       $result['shipping_products'] = $shipping_products;
