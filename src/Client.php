@@ -444,7 +444,7 @@ class Client {
 
     while (!feof($socket)) {
       if ((microtime(true) - $microtimeStart) > $this->_timeout) {
-       throw new \Exception('Timout during retrieval');
+       throw new \Exception('Timeout during retrieval');
        return false;
       }
 
