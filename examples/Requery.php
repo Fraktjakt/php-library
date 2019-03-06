@@ -10,16 +10,16 @@
               ->setConsignorKey('0123456789abcdef0123456789abcdef01234567')
               ->setTestMode(true);
 
-    $request = array(
-      'consignor' => array(
+    $request = [
+      'consignor' => [
         'currency' => 'SEK',
         'language' => 'sv',
         'encoding' => 'UTF-8',
-      ),
+      ],
       'value' => 199.50,
       'shipper_info' => 1,
-      'shipment_id' => 1494539,
-    );
+      'shipment_id' => 1496973,
+    ];
 
     $result = $fraktjakt->Requery($request);
 

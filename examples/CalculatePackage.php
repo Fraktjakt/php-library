@@ -6,8 +6,8 @@
 
     $fraktjakt = new \Fraktjakt\Client();
 
-    $items = array(
-      array(
+    $items = [
+      [
         'name' => 'Item 1',
         'quantity' => 2,
         'length' => 20,
@@ -16,8 +16,8 @@
         'weight' => 1,
         //'weight_unit' => 'kg', // If omitted we assume kg
         //'length_unit' => 'cm', // If omitted we assume cm
-      ),
-      array(
+      ],
+      [
         'name' => 'Item 2',
         'quantity' => 2,
         'length' => 200,
@@ -26,8 +26,8 @@
         'weight' => 1000,
         'weight_unit' => 'g',
         'length_unit' => 'mm',
-      ),
-    );
+      ],
+    ];
 
     $package = $fraktjakt->CalculatePackage($items);
 

@@ -58,22 +58,22 @@ class Client {
 
   // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
-      $commodities = array();
+      $commodities = [];
       foreach ($request['commodities'] as $commodity) {
-        $commodities[] = array(
+        $commodities[] = [
           'commodity' => $commodity,
-        );
+        ];
       }
       $request['commodities'] = $commodities;
     }
 
   // Rewrite parcels depth for XML because arrays do not have duplicate keys
     if (!empty($request['parcels'])) {
-      $parcels = array();
+      $parcels = [];
       foreach ($request['parcels'] as $parcel) {
-        $parcels[] = array(
+        $parcels[] = [
           'parcel' => $parcel,
-        );
+        ];
       }
       $request['parcels'] = $parcels;
     }
@@ -86,10 +86,10 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/orders/order_xml';
     }
 
-    $request = http_build_query(array(
+    $request = http_build_query([
       'xml' => $request,
       'md5_checksum' => md5($request)
-    ), '', '&');
+    ], '', '&');
 
     $result = $this->_call('POST', $url, $request);
 
@@ -127,11 +127,11 @@ class Client {
 
   // Rewrite parcels depth for XML because arrays do not have duplicate keys
     if (!empty($request['parcels'])) {
-      $parcels = array();
+      $parcels = [];
       foreach ($request['parcels'] as $parcel) {
-        $parcels[] = array(
+        $parcels[] = [
           'parcel' => $parcel,
-        );
+        ];
       }
       $request['parcels'] = $parcels;
     }
@@ -144,10 +144,10 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/fraktjakt/query_xml';
     }
 
-    $request = http_build_query(array(
+    $request = http_build_query([
       'xml' => $request,
       'md5_checksum' => md5($request),
-    ), '', '&');
+    ], '', '&');
 
     $result = $this->_call('POST', $url, $request);
 
@@ -190,10 +190,10 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/fraktjakt/requery_xml';
     }
 
-    $request = http_build_query(array(
+    $request = http_build_query([
       'xml' => $request,
       'md5_checksum' => md5($request)
-    ), '', '&');
+    ], '', '&');
 
     $result = $this->_call('POST', $url, $request);
 
@@ -230,11 +230,11 @@ class Client {
 
   // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
-      $commodities = array();
+      $commodities = [];
       foreach ($request['commodities'] as $commodity) {
-        $commodities[] = array(
+        $commodities[] = [
           'commodity' => $commodity,
-        );
+        ];
       }
       $request['commodities'] = $commodities;
     }
@@ -247,10 +247,10 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/shipments/shipment_xml';
     }
 
-    $request = http_build_query(array(
+    $request = http_build_query([
       'xml' => $request,
       'md5_checksum' => md5($request)
-    ), '', '&');
+    ], '', '&');
 
     $result = $this->_call('POST', $url, $request);
 
@@ -278,7 +278,7 @@ class Client {
 
   // Rewrite shipping_states depth for Array because arrays cannot have duplicate keys
     if (isset($result['shipping_states'])) {
-      $shipping_states = array();
+      $shipping_states = [];
       if (!empty($result['shipping_states']['shipping_state'])) {
 
        // Future proof for case of multiple statuses (sequentially indexed)
@@ -299,12 +299,12 @@ class Client {
 
   public function CalculatePackage($items) {
 
-    $package = array(
+    $package = [
       'weight' => 0,
-      'dimensions' => array(0, 0, 0),
+      'dimensions' => [0, 0, 0],
       'weight_unit' => 'kg',
       'length_unit' => 'cm',
-    );
+    ];
 
     foreach ($items as $item) {
 
@@ -322,11 +322,11 @@ class Client {
 
         $package['weight'] += $item['weight'];
 
-        $item_dimensions = array(
+        $item_dimensions = [
           $item['length'],
           $item['width'],
           $item['height'],
-        );
+        ];
 
         rsort($item_dimensions, SORT_NUMERIC);
 
@@ -384,8 +384,8 @@ class Client {
 
   private function _call(string $method, string $url, string $data = null) {
 
-    $this->_lastRequest = array();
-    $this->_lastResponse = array();
+    $this->_lastRequest = [];
+    $this->_lastResponse = [];
     $this->_lastLog = '';
 
     $headers = array(
@@ -427,11 +427,11 @@ class Client {
     $responseBody = '';
     $microtimeStart = microtime(true);
 
-    $this->_lastRequest = array(
+    $this->_lastRequest = [
       'timestamp' => time(),
       'head' => $out,
       'body' => $data,
-    );
+    ];
 
     if (!$socket = stream_socket_client(strtr('scheme://host:port', $parts), $errno, $errstr, $this->_timeout)) {
       throw new \Exception('Error calling URL ('. $url .'): '. $errstr);
@@ -467,14 +467,14 @@ class Client {
     preg_match('#HTTP/\d(\.\d)?\s(\d{3})#', $responseHeaders, $matches);
     $status_code = $matches[2];
 
-    $this->_lastResponse = array(
+    $this->_lastResponse = [
       'timestamp' => time(),
       'status_code' => $status_code,
       'head' => $responseHeaders,
       'duration' => round((microtime(true) - $microtimeStart)*1000),
       'bytes' => strlen($responseHeaders . "\r\n" . $responseBody),
       'body' => $responseBody,
-    );
+    ];
 
     parse_str($data, $request_object);
     if (isset($request_object['xml'])) {

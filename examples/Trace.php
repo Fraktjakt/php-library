@@ -10,9 +10,9 @@
               ->setConsignorKey('0123456789abcdef0123456789abcdef01234567')
               ->setTestMode(true);
 
-    $request = array(
-      'shipment_id' => 1492159,
-    );
+    $request = [
+      'shipment_id' => 1497951,
+    ];
 
     $result = $fraktjakt->Trace($request);
 

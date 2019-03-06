@@ -10,14 +10,14 @@
               ->setConsignorKey('0123456789abcdef0123456789abcdef01234567')
               ->setTestMode(true);
 
-    $request = array(
-      'consignor' => array(
+    $request = [
+      'consignor' => [
         'currency' => 'SEK',
         'language' => 'sv',
         'encoding' => 'utf-8',
-      ),
+      ],
       'reference' => uniqid(),
-      'address_to' => array(
+      'address_to' => [
         'street_address_1' => 'Longway Street 1',
         'street_address_2' => '',
         'postal_code' => '12345',
@@ -25,15 +25,15 @@
         'residential' => false,
         'country_code' => 'SE',
         'country_subdivision_code' => '',
-      ),
-      'recipient' => array(
+      ],
+      'recipient' => [
         'company_to' => 'ACME Corp.',
         'name_to' => 'John Doe',
         'telephone_to' => '+46123456789',
         'email_to' => 'test@tim-international.net',
-      ),
-      'commodities' => array(
-        array(
+      ],
+      'commodities' => [
+        [
           'name' => 'Test Item',
           'quantity' => 1,
           'taric' => '',
@@ -42,9 +42,9 @@
           'country_of_manufacture' => '',
           'weight' => 1,
           'unit_price' => 199.50,
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
 
     $result = $fraktjakt->Shipment($request);
 
