@@ -471,23 +471,35 @@ class Client {
       'timestamp' => time(),
       'status_code' => $status_code,
       'head' => $responseHeaders,
-      'duration' => round(microtime(true) - $microtimeStart, 3),
+      'duration' => round((microtime(true) - $microtimeStart)*1000),
       'bytes' => strlen($responseHeaders . "\r\n" . $responseBody),
       'body' => $responseBody,
     );
 
     parse_str($data, $request_object);
     if (isset($request_object['xml'])) {
-      $xml = preg_replace('#(\R+)#', "\r\n", urldecode($request_object['xml']));
+      $xml_request = preg_replace('#(\R+)#', "\r\n", urldecode($request_object['xml']));
     }
 
+  // Pretty printed response
+    $dom = new \DOMDocument();
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
+    $dom->loadXML($responseBody);
+    $xml_response = $dom->saveXML();
+
     $this->_lastLog = (
-      "## XML Request Object ##############################\r\n\r\n" .
-      ((!empty($xml)) ? $xml : '(Null)') . "\r\n\r\n" .
-      "## [". date('Y-m-d H:i:s', $this->_lastRequest['timestamp']) ."] HTTP Request ##############################\r\n\r\n" .
+      '##'. str_pad(' XML Request Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+      ((!empty($xml_request)) ? $xml_request : 'n/a') . "\r\n" .
+
+      '##'. str_pad(' XML Response Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+      ((!empty($xml_response)) ? $xml_response : 'n/a') . "\r\n" .
+
+      '##'. str_pad(' ['. date('Y-m-d H:i:s', $this->_lastRequest['timestamp']) .'] Raw HTTP Request ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
       $this->_lastRequest['head']."\r\n" .
       $this->_lastRequest['body']."\r\n\r\n" .
-      "## [". date('Y-m-d H:i:s', $this->_lastResponse['timestamp']) ."] HTTP Response — ". number_format($this->_lastResponse['bytes'], 0, '.', ',') ." bytes transferred in ". (float)$this->_lastResponse['duration'] ." s ##############################\r\n\r\n" .
+
+      '##'. str_pad(' ['. date('Y-m-d H:i:s', $this->_lastResponse['timestamp']) .'] Raw HTTP Response — '. number_format($this->_lastResponse['bytes'], 0, '.', ',') .' bytes transferred in '. number_format($this->_lastResponse['duration']) .' ms ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
       $this->_lastResponse['head']."\r\n" .
       $this->_lastResponse['body']."\r\n\r\n"
     );
