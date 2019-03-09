@@ -155,7 +155,7 @@ class Client {
     if (isset($result['shipping_products'])) {
       $shipping_products = array();
       if (!empty($result['shipping_products']['shipping_product'])) {
-        if (count($result['shipping_products']) > 1) {
+        if (array_keys($result['shipping_products']['shipping_product'])[0] == '0') {
           foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
             $shipping_products[] = $shipping_product;
           }
@@ -201,7 +201,7 @@ class Client {
     if (isset($result['shipping_products'])) {
       $shipping_products = array();
       if (!empty($result['shipping_products']['shipping_product'])) {
-        if (count($result['shipping_products']) > 1) {
+        if (array_keys($result['shipping_products']['shipping_product'])[0] == '0') {
           foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
             $shipping_products[] = $shipping_product;
           }
@@ -278,18 +278,16 @@ class Client {
 
   // Rewrite shipping_states depth for Array because arrays cannot have duplicate keys
     if (isset($result['shipping_states'])) {
-      $shipping_states = [];
+      $shipping_states = array();
       if (!empty($result['shipping_states']['shipping_state'])) {
-
        // Future proof for case of multiple statuses (sequentially indexed)
-        if (!array_filter(array_keys($result['shipping_states']['shipping_state']), 'is_string')) {
-          foreach ($result['shipping_states']['shipping_state'] as $shipping_state) {
+        if (array_keys($result['shipping_states']['shipping_product'])[0] == '0') {
+          foreach ($result['shipping_states']['shipping_product'] as $shipping_state) {
             $shipping_states[] = $shipping_state;
           }
         } else {
           $shipping_states[] = $result['shipping_states']['shipping_state'];
         }
-
       }
       $result['shipping_states'] = $shipping_states;
     }
