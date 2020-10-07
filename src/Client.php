@@ -239,6 +239,17 @@ class Client {
       $request['commodities'] = $commodities;
     }
 
+  // Rewrite parcels depth for XML because arrays do not have duplicate keys
+    if (!empty($request['parcels'])) {
+      $parcels = [];
+      foreach ($request['parcels'] as $parcel) {
+        $parcels[] = [
+          'parcel' => $parcel,
+        ];
+      }
+      $request['parcels'] = $parcels;
+    }
+
     $request = $this->_arrayToXml($request, 'CreateShipment', $encoding);
 
     if ($this->_testMode) {
