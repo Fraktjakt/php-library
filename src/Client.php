@@ -340,6 +340,13 @@ class Client {
     return $value * ($units[$to] / $units[$from]);
   }
 
+  private function AutoUpdate() {
+    $contents = $this->_call('GET', 'https://raw.githubusercontent.com/Fraktjakt/php-library/master/src/Client.php');
+    if ($this->_lastResponse['status_code'] == 200) {
+      file_put_contents(__FILE__, $contents);
+    }
+  }
+
   private function _call(string $method, string $url, string $data = null) {
 
     $this->_lastRequest = [];
