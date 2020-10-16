@@ -24,7 +24,6 @@
         'city_name' => 'Noplace',
         'residential' => false,
         'country_code' => 'SE',
-        'country_subdivision_code' => '',
       ],
       'recipient' => [
         'company_to' => 'ACME Corp.',

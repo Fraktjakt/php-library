@@ -53,7 +53,7 @@ class Client {
     $request['consignor']['key'] = $this->_consignorKey;
 
     if (empty($request['consignor']['api_version'])) {
-      $request['consignor']['api_version'] = '3.2';
+      $request['consignor']['api_version'] = '3.9';
     }
 
   // Rewrite commodities depth for XML because arrays do not have duplicate keys
@@ -122,7 +122,7 @@ class Client {
     $request['consignor']['key'] = $this->_consignorKey;
 
     if (empty($request['consignor']['api_version'])) {
-      $request['consignor']['api_version'] = '3.2';
+      $request['consignor']['api_version'] = '3.9';
     }
 
   // Rewrite parcels depth for XML because arrays do not have duplicate keys
@@ -179,7 +179,7 @@ class Client {
     $request['consignor']['key'] = $this->_consignorKey;
 
     if (empty($request['consignor']['api_version'])) {
-      $request['consignor']['api_version'] = '3.2';
+      $request['consignor']['api_version'] = '3.9';
     }
 
     $request = $this->_arrayToXml($request, 'shipment', $encoding);
@@ -225,7 +225,7 @@ class Client {
     $request['consignor']['key'] = $this->_consignorKey;
 
     if (empty($request['consignor']['api_version'])) {
-      $request['consignor']['api_version'] = '3.2';
+      $request['consignor']['api_version'] = '3.9';
     }
 
   // Rewrite commodities depth for XML because arrays do not have duplicate keys
