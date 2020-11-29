@@ -502,7 +502,26 @@ class Client {
 
     $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="'. $encoding .'"?><'.$rootElement.'/>');
 
-    $this->_arrayToXmlIterator($array, $xml);
+    $convert = function(array $array, &$xml) use (&$convert) {
+
+      foreach ($array as $key => $value) {
+
+        if (is_array($value)) {
+
+          if (is_numeric($key)) {
+            $convert($value, $xml);
+          } else {
+            $subnode = $xml->addChild($key);
+            $convert($value, $subnode);
+          }
+
+        } else {
+          $xml->addChild($key, $value);
+        }
+      }
+    };
+
+    $convert($array, $xml);
 
     libxml_use_internal_errors(true);
 
@@ -519,24 +538,5 @@ class Client {
     }
 
     return $dom->saveXML();
-  }
-
-  private function _arrayToXmlIterator(array $array, &$xml) {
-
-    foreach ($array as $key => $value) {
-
-      if (is_array($value)) {
-
-        if (is_numeric($key)) {
-          $this->_arrayToXmlIterator($value, $xml);
-        } else {
-          $subnode = $xml->addChild($key);
-          $this->_arrayToXmlIterator($value, $subnode);
-        }
-
-      } else {
-        $xml->addChild($key, $value);
-      }
-    }
   }
 }
