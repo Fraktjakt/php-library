@@ -292,8 +292,8 @@ class Client {
       $shipping_states = array();
       if (!empty($result['shipping_states']['shipping_state'])) {
        // Future proof for case of multiple statuses (sequentially indexed)
-        if (array_keys($result['shipping_states']['shipping_product'])[0] == '0') {
-          foreach ($result['shipping_states']['shipping_product'] as $shipping_state) {
+        if (array_keys($result['shipping_states']['shipping_state'])[0] == '0') {
+          foreach ($result['shipping_states']['shipping_state'] as $shipping_state) {
             $shipping_states[] = $shipping_state;
           }
         } else {
