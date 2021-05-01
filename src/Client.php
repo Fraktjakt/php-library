@@ -502,7 +502,7 @@ class Client {
 
     $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="'. $encoding .'"?><'.$rootElement.'/>');
 
-    $convert = function(array $array, &$xml) use (&$convert) {
+    $convert = function(array $array, &$xml) use (&$convert, $encoding) {
 
       foreach ($array as $key => $value) {
 
@@ -516,7 +516,7 @@ class Client {
           }
 
         } else {
-          $xml->addChild($key, $value);
+          $xml->addChild($key, html_entity_decode($value, null, $encoding));
         }
       }
     };
