@@ -380,21 +380,18 @@ class Client {
       default: $parts['scheme'] = 'tcp'; break;
     }
 
-    $out = $method ." ". $parts['path'] . ((isset($parts['query'])) ? '?' . $parts['query'] : '') ." HTTP/1.1\r\n" .
-         "Host: ". $parts['host'] ."\r\n";
+    $requestHeaders = $method ." ". $parts['path'] . ((isset($parts['query'])) ? '?' . $parts['query'] : '') ." HTTP/1.1\r\n"
+                    . "Host: ". $parts['host'] ."\r\n";
 
     foreach ($headers as $key => $value) {
-      $out .= "$key: $value\r\n";
+      $requestHeaders .= "$key: $value\r\n";
     }
 
-    $bodyFound = false;
-    $responseHeaders = '';
-    $responseBody = '';
     $microtimeStart = microtime(true);
 
     $this->_lastRequest = [
       'timestamp' => time(),
-      'head' => $out,
+      'head' => $requestHeaders,
       'body' => $data,
     ];
 
@@ -404,46 +401,39 @@ class Client {
 
     stream_set_timeout($socket, $this->_timeout);
 
-    fwrite($socket, $out . "\r\n");
-    fwrite($socket, $data);
+    fwrite($socket, $requestHeaders . "\r\n" . $data);
 
+    $response = '';
     while (!feof($socket)) {
+
       if ((microtime(true) - $microtimeStart) > $this->_timeout) {
-       throw new \Exception('Timeout during retrieval');
-       return false;
+        trigger_error('Timeout during retrieval', E_USER_WARNING);
+        return false;
       }
 
-      $line = fgets($socket);
-      if ($line == "\r\n") {
-       $bodyFound = true;
-       continue;
-      }
-
-      if ($bodyFound) {
-       $responseBody .= $line;
-       continue;
-      }
-
-      $responseHeaders .= $line;
+      $response .= fgets($socket);
     }
 
     fclose($socket);
 
+    $responseHeaders = substr($response, 0, strpos($response, "\r\n\r\n") - 2);
+    $responseBody = substr($response, strpos($response, "\r\n\r\n") + 4);
+
     preg_match('#HTTP/\d(\.\d)?\s(\d{3})#', $responseHeaders, $matches);
-    $status_code = $matches[2];
+    $statusCode = $matches[2];
 
     $this->_lastResponse = [
       'timestamp' => time(),
-      'status_code' => $status_code,
+      'statusCode' => $statusCode,
       'head' => $responseHeaders,
       'duration' => round((microtime(true) - $microtimeStart)*1000),
       'bytes' => strlen($responseHeaders . "\r\n" . $responseBody),
       'body' => $responseBody,
     ];
 
-    parse_str($data, $request_object);
-    if (isset($request_object['xml'])) {
-      $xml_request = preg_replace('#(\R+)#', "\r\n", urldecode($request_object['xml']));
+    parse_str($data, $requestObject);
+    if (isset($requestObject['xml'])) {
+      $xmlRequest = preg_replace('#(\R+)#', "\r\n", urldecode($requestObject['xml']));
     }
 
   // Pretty printed response
@@ -451,14 +441,14 @@ class Client {
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;
     $dom->loadXML($responseBody);
-    $xml_response = $dom->saveXML();
+    $xmlResponse = $dom->saveXML();
 
     $this->_lastLog = (
       '##'. str_pad(' XML Request Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
-      ((!empty($xml_request)) ? $xml_request : 'n/a') . "\r\n" .
+      ((!empty($xmlRequest)) ? $xmlRequest : 'n/a') . "\r\n" .
 
       '##'. str_pad(' XML Response Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
-      ((!empty($xml_response)) ? $xml_response : 'n/a') . "\r\n" .
+      ((!empty($xmlResponse)) ? $xmlResponse : 'n/a') . "\r\n" .
 
       '##'. str_pad(' ['. date('Y-m-d H:i:s', $this->_lastRequest['timestamp']) .'] Raw HTTP Request ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
       $this->_lastRequest['head']."\r\n" .
@@ -488,7 +478,7 @@ class Client {
 
   // Convert to array
     if (!$result = $this->_xmlToArray($xml)) {
-      throw new \Exception("Could not convert result to an array" . PHP_EOL . print_r($xml, true));
+      throw new \Exception('Could not convert result to an array' . PHP_EOL . print_r($xml, true));
     }
 
     return $result;
