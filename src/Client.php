@@ -516,7 +516,9 @@ class Client {
           }
 
         } else {
-          $xml->addChild($key, html_entity_decode($value, null, $encoding));
+          $value = html_entity_decode($value, null, $encoding);
+          $value = str_replace('&', '&amp;', $value); // Fix PHP issue #36795
+          $xml->addChild($key, $value);
         }
       }
     };
