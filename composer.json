@@ -19,7 +19,6 @@
         "source": "https://github.com/Fraktjakt/php-library/",
         "issues": "https://github.com/Fraktjakt/php-library/issues"
     },
-    "type": "library",
     "autoload": {
         "psr-0": {
             "Fraktjakt\\": "src/"
