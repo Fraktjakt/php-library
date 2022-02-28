@@ -125,6 +125,17 @@ class Client {
       $request['consignor']['api_version'] = '3.9';
     }
 
+  // Rewrite commodities depth for XML because arrays do not have duplicate keys
+    if (!empty($request['commodities'])) {
+      $commodities = [];
+      foreach ($request['commodities'] as $commodity) {
+        $commodities[] = [
+          'commodity' => $commodity,
+        ];
+      }
+      $request['commodities'] = $commodities;
+    }
+
   // Rewrite parcels depth for XML because arrays do not have duplicate keys
     if (!empty($request['parcels'])) {
       $parcels = [];
