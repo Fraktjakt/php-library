@@ -40,10 +40,40 @@ class Client {
   }
 
   public function getLastLog() {
-    return !empty($this->_lastLog) ? $this->_lastLog : '## (Null) ##';
+
+    if (empty($this->_lastRequest) && empty($this->_lastResponse)) return false;
+
+    $log = (
+      '##'. str_pad(' XML Request Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+      ((!empty($this->_lastRequest['XML'])) ? $this->_lastRequest['XML'] : "n/a\r\n") . "\r\n" .
+
+      '##'. str_pad(' XML Response Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+      ((!empty($this->_lastResponse['XML'])) ? $this->_lastResponse['XML'] : "n/a\r\n") . "\r\n"
+    );
+
+    if (!empty($this->_lastRequest['head'])) {
+      $log .= (
+        '##'. str_pad(' ['. date('Y-m-d H:i:s', $this->_lastRequest['timestamp']) .'] Raw HTTP Request ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+        $this->_lastRequest['head'] .
+        $this->_lastRequest['body'] . "\r\n\r\n"
+      );
+    }
+
+    if (!empty($this->_lastResponse['head'])) {
+      $log .= (
+        '##'. str_pad(' ['. date('Y-m-d H:i:s', $this->_lastResponse['timestamp']) .'] Raw HTTP Response — '. number_format($this->_lastResponse['bytes'], 0, '.', ',') .' bytes transferred in '. number_format($this->_lastResponse['duration']) .' ms ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+        $this->_lastResponse['head'] .
+        $this->_lastResponse['body'] . "\r\n\r\n"
+      );
+    }
+
+    return $log;
   }
 
   public function Order(array $request, string $encoding = 'UTF-8') {
+
+    $this->_lastRequest = [];
+    $this->_lastResponse = [];
 
     if (isset($request['shipping_product_id']) && $request['shipping_product_id'] == '0') {
       throw new \Exception('You cannot place orders for custom shipping products (shipping_product_id: 0)');
@@ -105,6 +135,8 @@ class Client {
   }
 
   public function Query(array $request, string $encoding = 'UTF-8') {
+    $this->_lastRequest = [];
+    $this->_lastResponse = [];
 
     if (empty($request['address_to']['street_address_1'])) {
       throw new \Exception('You must provide an address for delivery');
@@ -186,6 +218,9 @@ class Client {
 
   public function Requery(array $request, string $encoding = 'UTF-8') {
 
+    $this->_lastRequest = [];
+    $this->_lastResponse = [];
+
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
 
@@ -231,6 +266,9 @@ class Client {
   }
 
   public function Shipment(array $request, string $encoding = 'UTF-8') {
+
+    $this->_lastRequest = [];
+    $this->_lastResponse = [];
 
     $request['consignor']['id'] = $this->_consignorId;
     $request['consignor']['key'] = $this->_consignorKey;
@@ -284,6 +322,9 @@ class Client {
   }
 
   public function Trace(array $request, string $encoding = 'UTF-8') {
+
+    $this->_lastRequest = [];
+    $this->_lastResponse = [];
 
     $request['consignor_id'] = $this->_consignorId;
     $request['consignor_key'] = $this->_consignorKey;
@@ -360,10 +401,6 @@ class Client {
 
   private function _call(string $method, string $url, string $data = null) {
 
-    $this->_lastRequest = [];
-    $this->_lastResponse = [];
-    $this->_lastLog = '';
-
     $headers = array(
       'User-Agent' => 'Fraktjakt-Client-PHP/'.self::VERSION,
     );
@@ -398,13 +435,19 @@ class Client {
       $requestHeaders .= "$key: $value\r\n";
     }
 
-    $microtimeStart = microtime(true);
+    parse_str($data, $requestObject);
+    if (isset($requestObject['xml'])) {
+      $xmlRequest = preg_replace('#(\R+)#', "\r\n", urldecode($requestObject['xml']));
+    }
 
     $this->_lastRequest = [
       'timestamp' => time(),
-      'head' => $requestHeaders,
+      'head' => $requestHeaders . "\r\n",
       'body' => $data,
+      'XML' => $xmlRequest,
     ];
+
+    $microtimeStart = microtime(true);
 
     if (!$socket = stream_socket_client(strtr('scheme://host:port', $parts), $errno, $errstr, $this->_timeout)) {
       throw new \Exception('Error calling URL ('. $url .'): '. $errstr);
@@ -427,25 +470,11 @@ class Client {
 
     fclose($socket);
 
-    $responseHeaders = substr($response, 0, strpos($response, "\r\n\r\n") - 2);
+    $responseHeaders = substr($response, 0, strpos($response, "\r\n\r\n") + 4);
     $responseBody = substr($response, strpos($response, "\r\n\r\n") + 4);
 
     preg_match('#HTTP/\d(\.\d)?\s(\d{3})#', $responseHeaders, $matches);
     $statusCode = $matches[2];
-
-    $this->_lastResponse = [
-      'timestamp' => time(),
-      'statusCode' => $statusCode,
-      'head' => $responseHeaders,
-      'duration' => round((microtime(true) - $microtimeStart)*1000),
-      'bytes' => strlen($responseHeaders . "\r\n" . $responseBody),
-      'body' => $responseBody,
-    ];
-
-    parse_str($data, $requestObject);
-    if (isset($requestObject['xml'])) {
-      $xmlRequest = preg_replace('#(\R+)#', "\r\n", urldecode($requestObject['xml']));
-    }
 
   // Pretty printed response
     $dom = new \DOMDocument();
@@ -454,21 +483,15 @@ class Client {
     $dom->loadXML($responseBody);
     $xmlResponse = $dom->saveXML();
 
-    $this->_lastLog = (
-      '##'. str_pad(' XML Request Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
-      ((!empty($xmlRequest)) ? $xmlRequest : 'n/a') . "\r\n" .
-
-      '##'. str_pad(' XML Response Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
-      ((!empty($xmlResponse)) ? $xmlResponse : 'n/a') . "\r\n" .
-
-      '##'. str_pad(' ['. date('Y-m-d H:i:s', $this->_lastRequest['timestamp']) .'] Raw HTTP Request ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
-      $this->_lastRequest['head']."\r\n" .
-      $this->_lastRequest['body']."\r\n\r\n" .
-
-      '##'. str_pad(' ['. date('Y-m-d H:i:s', $this->_lastResponse['timestamp']) .'] Raw HTTP Response — '. number_format($this->_lastResponse['bytes'], 0, '.', ',') .' bytes transferred in '. number_format($this->_lastResponse['duration']) .' ms ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
-      $this->_lastResponse['head']."\r\n" .
-      $this->_lastResponse['body']."\r\n\r\n"
-    );
+    $this->_lastResponse = [
+      'timestamp' => time(),
+      'statusCode' => $statusCode,
+      'head' => $responseHeaders,
+      'duration' => round((microtime(true) - $microtimeStart)*1000),
+      'bytes' => strlen($responseHeaders . $responseBody),
+      'body' => $responseBody,
+      'XML' => $xmlResponse,
+    ];
 
     if (empty($responseBody)) {
       throw new \Exception('No response from remote machine');
