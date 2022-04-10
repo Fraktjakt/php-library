@@ -196,7 +196,7 @@ class Client {
 
   // Rewrite shipping_products depth for Array because arrays cannot have duplicate keys
     if (isset($result['shipping_products'])) {
-      $shipping_products = array();
+      $shipping_products = [];
       if (!empty($result['shipping_products']['shipping_product'])) {
         if (array_keys($result['shipping_products']['shipping_product'])[0] == '0') {
           foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
@@ -245,7 +245,7 @@ class Client {
 
   // Rewrite shipping_products depth for Array because arrays cannot have duplicate keys
     if (isset($result['shipping_products'])) {
-      $shipping_products = array();
+      $shipping_products = [];
       if (!empty($result['shipping_products']['shipping_product'])) {
         if (array_keys($result['shipping_products']['shipping_product'])[0] == '0') {
           foreach ($result['shipping_products']['shipping_product'] as $shipping_product) {
@@ -341,7 +341,7 @@ class Client {
 
   // Rewrite shipping_states depth for Array because arrays cannot have duplicate keys
     if (isset($result['shipping_states'])) {
-      $shipping_states = array();
+      $shipping_states = [];
       if (!empty($result['shipping_states']['shipping_state'])) {
        // Future proof for case of multiple statuses (sequentially indexed)
         if (array_keys($result['shipping_states']['shipping_state'])[0] == '0') {
@@ -401,9 +401,9 @@ class Client {
 
   private function _call(string $method, string $url, string $data = null) {
 
-    $headers = array(
+    $headers = [
       'User-Agent' => 'Fraktjakt-Client-PHP/'.self::VERSION,
-    );
+    ];
 
     if (empty($headers['Content-Type']) && !empty($data)) {
       $headers['Content-Type'] = 'application/x-www-form-urlencoded';
