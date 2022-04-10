@@ -14,7 +14,7 @@ class Client {
   private $_consignorId;
   private $_consignorKey;
   private $_testMode;
-  private $_timeout = 20;
+  private $_timeout = 25;
   private $_lastRequest;
   private $_lastResponse;
   private $_lastLog;
