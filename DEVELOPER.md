@@ -1,3 +1,18 @@
+# Install Composer for Windows
+
+1. Download and run Composer-Setup.exe from https://getcomposer.org/download/.
+
+2. In the project folder (next to composer.json) create the file "Run Composer.cmd" with the following content:
+
+    @C:\Windows\System32\cmd.exe /k composer --version
+
+3. Execute "Run Composer.cmd" and in the command prompt type:
+
+    composer install
+
+Done! Composer should now have installed all necessary libraries.
+
+
 # Test PHP Code
 
 1. Make sure PHP is installed on your computer.
@@ -18,6 +33,15 @@
     php Trace.php
 ```
 
+# Test PHP Code Using PHP Unit
+
+1. Make sure Composer is installed and operating properly
+
+2. In the project folder (next to composer.json) create the file "Run PHPUnit Tests.cmd" with the following content:
+
+    @C:\Windows\System32\cmd.exe /k vendor\bin\phpunit.bat
+
+3. Execute the file to perform PHP Unit tests.
 
 
 # Social Coding
