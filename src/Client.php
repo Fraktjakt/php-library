@@ -135,6 +135,7 @@ class Client {
   }
 
   public function Query(array $request, string $encoding = 'UTF-8') {
+
     $this->_lastRequest = [];
     $this->_lastResponse = [];
 
@@ -444,7 +445,7 @@ class Client {
       'timestamp' => time(),
       'head' => $requestHeaders . "\r\n",
       'body' => $data,
-      'XML' => $xmlRequest,
+      'XML' => !empty($xmlRequest) ? $xmlRequest : '',
     ];
 
     $microtimeStart = microtime(true);
@@ -540,7 +541,7 @@ class Client {
           }
 
         } else {
-          $value = html_entity_decode($value, null, $encoding);
+          $value = html_entity_decode($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, $encoding);
           $value = str_replace('&', '&amp;', $value); // Fix PHP issue #36795
           $xml->addChild($key, $value);
         }
