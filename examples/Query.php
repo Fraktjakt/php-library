@@ -1,6 +1,6 @@
 <?php
 
-  require_once '../src/Client.php';
+  require_once __DIR__.'/../src/Client.php';
 
   try {
 
