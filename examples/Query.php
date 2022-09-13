@@ -46,7 +46,7 @@
 
     $result = $fraktjakt->Query($request);
 
-    echo json_encode($result, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    echo json_encode($result, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
   } catch(Exception $e) {
     die('An error occured: '. $e->getMessage() . PHP_EOL . PHP_EOL

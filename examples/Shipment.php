@@ -45,7 +45,9 @@
       ],
     ];
 
-    echo json_encode($result, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    $result = $fraktjakt->Shipment($request);
+
+    echo json_encode($result, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
     var_dump($result);
 
