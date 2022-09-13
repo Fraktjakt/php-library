@@ -581,8 +581,10 @@ class Client {
           }
 
         } else {
-          $value = html_entity_decode($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, $encoding);
-          $value = str_replace('&', '&amp;', $value); // Fix PHP issue #36795
+          if (!empty($value)) {
+            $value = html_entity_decode($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, $encoding);
+            $value = str_replace('&', '&amp;', $value); // Fix PHP issue #36795
+          }
           $xml->addChild($key, $value);
         }
       }
