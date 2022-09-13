@@ -369,6 +369,37 @@ class Client {
     return $result;
   }
 
+  public function ServicepointLocator(array $request, string $encoding = 'UTF-8') {
+
+    $this->_lastRequest = [];
+    $this->_lastResponse = [];
+
+    $request['consignor_id'] = $this->_consignorId;
+    $request['consignor_key'] = $this->_consignorKey;
+
+    if ($this->_testMode) {
+      $url = self::SERVER_TEST.'/agents/service_point_locator';
+    } else {
+      $url = self::SERVER_PRODUCTION.'/agents/service_point_locator';
+    }
+
+    $request = http_build_query($request, '', '&');
+
+    if (!$result = $this->_call('GET', $url .'?'. $request)) {
+      throw new Exception('No response');
+    }
+
+    if (!$result = json_decode($result, true)) {
+      throw new Exception('Invalid JSON response');
+    }
+
+    if (!empty($result['error'])) {
+      throw new Exception($result['error']);
+    }
+
+    return $result;
+  }
+
   public function ConvertLength($value, $from, $to) {
 
     $units = [
