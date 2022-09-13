@@ -44,11 +44,11 @@ class Client {
     if (empty($this->_lastRequest) && empty($this->_lastResponse)) return false;
 
     $log = (
-      '##'. str_pad(' XML Request Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
-      ((!empty($this->_lastRequest['XML'])) ? $this->_lastRequest['XML'] : "n/a\r\n") . "\r\n" .
+      '##'. str_pad(' Request Parameters ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+      ((!empty($this->_lastRequest['parameters'])) ? $this->_lastRequest['parameters'] : "n/a\r\n") . "\r\n" .
 
-      '##'. str_pad(' XML Response Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
-      ((!empty($this->_lastResponse['XML'])) ? $this->_lastResponse['XML'] : "n/a\r\n") . "\r\n"
+      '##'. str_pad(' Response Parameters ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+      ((!empty($this->_lastResponse['parameters'])) ? $this->_lastResponse['parameters'] : "n/a\r\n") . "\r\n"
     );
 
     if (!empty($this->_lastRequest['head'])) {
@@ -86,7 +86,7 @@ class Client {
       $request['consignor']['api_version'] = '3.9';
     }
 
-  // Rewrite commodities depth for XML because arrays do not have duplicate keys
+    // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
       $commodities = [];
       foreach ($request['commodities'] as $commodity) {
@@ -97,7 +97,7 @@ class Client {
       $request['commodities'] = $commodities;
     }
 
-  // Rewrite parcels depth for XML because arrays do not have duplicate keys
+    // Rewrite parcels depth for XML because arrays do not have duplicate keys
     if (!empty($request['parcels'])) {
       $parcels = [];
       foreach ($request['parcels'] as $parcel) {
@@ -116,12 +116,14 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/orders/order_xml';
     }
 
+    $headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
+
     $request = http_build_query([
       'xml' => $request,
       'md5_checksum' => md5($request)
     ], '', '&');
 
-    $result = $this->_call('POST', $url, $request);
+    $result = $this->_call('POST', $url, $request, $headers);
 
     if (empty($result['shipment_id'])) {
       throw new \Exception('Missing shipment ID in result');
@@ -158,7 +160,7 @@ class Client {
       $request['consignor']['api_version'] = '3.9';
     }
 
-  // Rewrite commodities depth for XML because arrays do not have duplicate keys
+    // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
       $commodities = [];
       foreach ($request['commodities'] as $commodity) {
@@ -169,7 +171,7 @@ class Client {
       $request['commodities'] = $commodities;
     }
 
-  // Rewrite parcels depth for XML because arrays do not have duplicate keys
+    // Rewrite parcels depth for XML because arrays do not have duplicate keys
     if (!empty($request['parcels'])) {
       $parcels = [];
       foreach ($request['parcels'] as $parcel) {
@@ -188,14 +190,16 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/fraktjakt/query_xml';
     }
 
+    $headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
+
     $request = http_build_query([
       'xml' => $request,
       'md5_checksum' => md5($request),
     ], '', '&');
 
-    $result = $this->_call('POST', $url, $request);
+    $result = $this->_call('POST', $url, $request, $headers);
 
-  // Rewrite shipping_products depth for Array because arrays cannot have duplicate keys
+    // Rewrite shipping_products depth for Array because arrays cannot have duplicate keys
     if (isset($result['shipping_products'])) {
       $shipping_products = [];
       if (!empty($result['shipping_products']['shipping_product'])) {
@@ -237,14 +241,16 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/fraktjakt/requery_xml';
     }
 
+    $headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
+
     $request = http_build_query([
       'xml' => $request,
       'md5_checksum' => md5($request)
     ], '', '&');
 
-    $result = $this->_call('POST', $url, $request);
+    $result = $this->_call('POST', $url, $request, $headers);
 
-  // Rewrite shipping_products depth for Array because arrays cannot have duplicate keys
+    // Rewrite shipping_products depth for Array because arrays cannot have duplicate keys
     if (isset($result['shipping_products'])) {
       $shipping_products = [];
       if (!empty($result['shipping_products']['shipping_product'])) {
@@ -278,7 +284,7 @@ class Client {
       $request['consignor']['api_version'] = '3.9';
     }
 
-  // Rewrite commodities depth for XML because arrays do not have duplicate keys
+    // Rewrite commodities depth for XML because arrays do not have duplicate keys
     if (!empty($request['commodities'])) {
       $commodities = [];
       foreach ($request['commodities'] as $commodity) {
@@ -289,7 +295,7 @@ class Client {
       $request['commodities'] = $commodities;
     }
 
-  // Rewrite parcels depth for XML because arrays do not have duplicate keys
+    // Rewrite parcels depth for XML because arrays do not have duplicate keys
     if (!empty($request['parcels'])) {
       $parcels = [];
       foreach ($request['parcels'] as $parcel) {
@@ -308,12 +314,14 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/shipments/shipment_xml';
     }
 
+    $headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
+
     $request = http_build_query([
       'xml' => $request,
       'md5_checksum' => md5($request)
     ], '', '&');
 
-    $result = $this->_call('POST', $url, $request);
+    $result = $this->_call('POST', $url, $request, $headers);
 
     if (empty($result['shipment_id'])) {
       throw new \Exception('Missing shipment ID in result');
@@ -336,15 +344,17 @@ class Client {
       $url = self::SERVER_PRODUCTION.'/trace/xml_trace';
     }
 
-    $request = http_build_query($request);
+    $headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
 
-    $result = $this->_call('POST', $url, $request);
+    $request = http_build_query($request, '', '&');
 
-  // Rewrite shipping_states depth for Array because arrays cannot have duplicate keys
+    $result = $this->_call('POST', $url, $request, $headers);
+
+    // Rewrite shipping_states depth for Array because arrays cannot have duplicate keys
     if (isset($result['shipping_states'])) {
       $shipping_states = [];
       if (!empty($result['shipping_states']['shipping_state'])) {
-       // Future proof for case of multiple statuses (sequentially indexed)
+        // Future proof for case of multiple statuses (sequentially indexed)
         if (array_keys($result['shipping_states']['shipping_state'])[0] == '0') {
           foreach ($result['shipping_states']['shipping_state'] as $shipping_state) {
             $shipping_states[] = $shipping_state;
@@ -400,15 +410,9 @@ class Client {
     }
   }
 
-  private function _call(string $method, string $url, string $data = null) {
+  private function _call(string $method, string $url, string $data = null, $headers = []) {
 
-    $headers = [
-      'User-Agent' => 'Fraktjakt-Client-PHP/'.self::VERSION,
-    ];
-
-    if (empty($headers['Content-Type']) && !empty($data)) {
-      $headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    }
+    $headers['User-Agent'] = 'Fraktjakt-Client-PHP/'.self::VERSION;
 
     if (!empty($data) && empty($headers['Content-Length'])) {
       $headers['Content-Length'] = strlen($data);
@@ -436,17 +440,37 @@ class Client {
       $requestHeaders .= "$key: $value\r\n";
     }
 
-    parse_str($data, $requestObject);
-    if (isset($requestObject['xml'])) {
-      $xmlRequest = preg_replace('#(\R+)#', "\r\n", urldecode($requestObject['xml']));
-    }
-
     $this->_lastRequest = [
       'timestamp' => time(),
       'head' => $requestHeaders . "\r\n",
       'body' => $data,
-      'XML' => !empty($xmlRequest) ? $xmlRequest : '',
+      'parameters' => null,
     ];
+
+    if (strtoupper($method) == 'POST' && preg_match('#application/x-www-form-urlencoded#i', $headers['Content-Type'])) {
+
+      parse_str($data, $requestParameters);
+
+      if (isset($requestParameters['xml'])) {
+        $this->_lastRequest['parameters'] = preg_replace('#(\R+)#', "\r\n", urldecode($requestParameters['xml']));
+      } else {
+        $this->_lastRequest['parameters'] = $requestParameters;
+      }
+
+    } else if (strtoupper($method) == 'POST' && preg_match('#(application|text)/xml#i', $headers['Content-Type'])) {
+
+      $this->_lastRequest['parameters'] = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+    } else if (strtoupper($method) == 'POST' && preg_match('#(application|text)/json#i', $headers['Content-Type'])) {
+
+      $this->_lastRequest['parameters'] = $data;
+
+    } else if (strtoupper($method) == 'GET') {
+
+      parse_str(parse_url($url, PHP_URL_QUERY), $requestParameters);
+
+      $this->_lastRequest['parameters'] = json_encode($requestParameters, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
 
     $microtimeStart = microtime(true);
 
@@ -477,13 +501,6 @@ class Client {
     preg_match('#HTTP/\d(\.\d)?\s(\d{3})#', $responseHeaders, $matches);
     $statusCode = $matches[2];
 
-  // Pretty printed response
-    $dom = new \DOMDocument();
-    $dom->preserveWhiteSpace = false;
-    $dom->formatOutput = true;
-    $dom->loadXML($responseBody);
-    $xmlResponse = $dom->saveXML();
-
     $this->_lastResponse = [
       'timestamp' => time(),
       'statusCode' => $statusCode,
@@ -491,29 +508,52 @@ class Client {
       'duration' => round((microtime(true) - $microtimeStart)*1000),
       'bytes' => strlen($responseHeaders . $responseBody),
       'body' => $responseBody,
-      'XML' => $xmlResponse,
+      'parameters' => null,
     ];
 
-    if (empty($responseBody)) {
+    if (!$result = rtrim($responseBody)) {
       throw new \Exception('No response from remote machine');
     }
 
-  // Parse XML result
-    if (!$xml = @simplexml_load_string($responseBody, 'SimpleXMLElement', LIBXML_NOCDATA)) {
-      throw new \Exception('Invalid response from remote machine');
-    }
+    // Extract response parameters
+    if (preg_match('#Content-Type: (application|text)/xml#i', $responseHeaders)){
 
-    if (!empty($xml->error_message)) {
-      throw new \Exception($xml->error_message);
-    }
+      // Pretty printed response
+      $dom = new \DOMDocument();
+      $dom->preserveWhiteSpace = false;
+      $dom->formatOutput = true;
+      $dom->loadXML($responseBody);
+      $this->_lastResponse['parameters'] = $dom->saveXML();
 
-    if (!isset($xml->code) || (string)$xml->code == '2') {
-      throw new \Exception('Error Code 2');
-    }
+      // Parse XML result
+      if (!$xml = @simplexml_load_string($responseBody, 'SimpleXMLElement', LIBXML_NOCDATA)) {
+        throw new \Exception('Invalid response from remote machine');
+      }
 
-  // Convert to array
-    if (!$result = $this->_xmlToArray($xml)) {
-      throw new \Exception('Could not convert result to an array' . PHP_EOL . print_r($xml, true));
+      if (!empty($xml->error_message)) {
+        throw new \Exception($xml->error_message);
+      }
+
+      if (!isset($xml->code) || (string)$xml->code == '2') {
+        throw new \Exception('Error Code 2');
+      }
+
+      // Convert to array
+      if (!$result = $this->_xmlToArray($xml)) {
+        throw new \Exception('Could not convert result to an array' . PHP_EOL . print_r($xml, true));
+      }
+
+    } else if (preg_match('#Content-Type: (application|text)/json#i', $responseHeaders)){
+
+      $json = json_decode($responseBody);
+      $this->_lastResponse['parameters'] = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+    } else {
+      if (preg_match('#Content-Type: ([^\r\n]+)#i', $responseHeaders, $matches)) {
+        throw new \Exception('Unexpected response content type ('. $matches[1] .')');
+      } else {
+        throw new \Exception('Unknown response content type');
+      }
     }
 
     return $result;
