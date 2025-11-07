@@ -5,9 +5,8 @@
 
 		$fraktjakt = new \Fraktjakt\Client();
 
-		$fraktjakt->setConsignorId(14460)
-							->setConsignorKey('11a457227a9982a8058d30485d9cabce94ba000f')
-							->setTestMode(true);
+		$fraktjakt->setConsignorId(123456)
+							->setConsignorKey('0123456789abcdef0123456789abcdef01234567');
 
 		$request = [
 			'value' => 199.50,
