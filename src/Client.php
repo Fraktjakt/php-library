@@ -1,4 +1,6 @@
-<?php namespace Fraktjakt;
+<?php
+
+namespace Fraktjakt;
 
 /**
 *  Fraktjakt Client
@@ -7,13 +9,11 @@
 
 class Client {
 
-	const VERSION  = '1.0.0';
-	const SERVER_TEST  = 'https://testapi.fraktjakt.se';
-	const SERVER_PRODUCTION  = 'https://api.fraktjakt.se';
+	const VERSION = '1.0.0';
+	const API_BASE_URL = 'https://api.fraktjakt.se';
 
 	private $_consignorId;
 	private $_consignorKey;
-	private $_testMode;
 	private $_timeout = 25;
 	private $_lastRequest;
 	private $_lastResponse;
@@ -29,11 +29,6 @@ class Client {
 		return $this;
 	}
 
-	public function setTestMode(bool $state) {
-		$this->_testMode = $state;
-		return $this;
-	}
-
 	public function setTimeout(int $seconds) {
 		$this->_timeout = $seconds;
 		return $this;
@@ -44,10 +39,10 @@ class Client {
 		if (empty($this->_lastRequest) && empty($this->_lastResponse)) return false;
 
 		$log = (
-			'##'. str_pad(' Request Parameters ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+			'##'. str_pad(' XML Request Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
 			((!empty($this->_lastRequest['parameters'])) ? $this->_lastRequest['parameters'] : "n/a\r\n") . "\r\n" .
 
-			'##'. str_pad(' Response Parameters ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
+			'##'. str_pad(' XML Response Object ', 80, '#', STR_PAD_RIGHT) . "\r\n\r\n" .
 			((!empty($this->_lastResponse['parameters'])) ? $this->_lastResponse['parameters'] : "n/a\r\n") . "\r\n"
 		);
 
@@ -110,18 +105,15 @@ class Client {
 
 		$request = $this->_arrayToXml($request, 'OrderSpecification', $encoding);
 
-		if ($this->_testMode) {
-			$url = self::SERVER_TEST.'/orders/order_xml';
-		} else {
-			$url = self::SERVER_PRODUCTION.'/orders/order_xml';
-		}
-
-		$headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
 
 		$request = http_build_query([
 			'xml' => $request,
 			'md5_checksum' => md5($request)
 		], '', '&');
+
+		$headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
+
+		$url = self::API_BASE_URL.'/orders/order_xml';
 
 		$result = $this->_call('POST', $url, $request, $headers);
 
@@ -184,11 +176,7 @@ class Client {
 
 		$request = $this->_arrayToXml($request, 'shipment', $encoding);
 
-		if ($this->_testMode) {
-			$url = self::SERVER_TEST.'/fraktjakt/query_xml';
-		} else {
-			$url = self::SERVER_PRODUCTION.'/fraktjakt/query_xml';
-		}
+		$url = self::API_BASE_URL.'/fraktjakt/query_xml';
 
 		$headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
 
@@ -235,13 +223,9 @@ class Client {
 
 		$request = $this->_arrayToXml($request, 'shipment', $encoding);
 
-		if ($this->_testMode) {
-			$url = self::SERVER_TEST.'/fraktjakt/requery_xml';
-		} else {
-			$url = self::SERVER_PRODUCTION.'/fraktjakt/requery_xml';
-		}
-
 		$headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
+
+		$url = self::API_BASE_URL.'/fraktjakt/requery_xml';
 
 		$request = http_build_query([
 			'xml' => $request,
@@ -308,13 +292,9 @@ class Client {
 
 		$request = $this->_arrayToXml($request, 'CreateShipment', $encoding);
 
-		if ($this->_testMode) {
-			$url = self::SERVER_TEST.'/shipments/shipment_xml';
-		} else {
-			$url = self::SERVER_PRODUCTION.'/shipments/shipment_xml';
-		}
-
 		$headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
+
+		$url = self::API_BASE_URL.'/shipments/shipment_xml';
 
 		$request = http_build_query([
 			'xml' => $request,
@@ -338,11 +318,7 @@ class Client {
 		$request['consignor_id'] = $this->_consignorId;
 		$request['consignor_key'] = $this->_consignorKey;
 
-		if ($this->_testMode) {
-			$url = self::SERVER_TEST.'/trace/xml_trace';
-		} else {
-			$url = self::SERVER_PRODUCTION.'/trace/xml_trace';
-		}
+		$url = self::API_BASE_URL.'/trace/xml_trace';
 
 		$headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
 
@@ -377,11 +353,7 @@ class Client {
 		$request['consignor_id'] = $this->_consignorId;
 		$request['consignor_key'] = $this->_consignorKey;
 
-		if ($this->_testMode) {
-			$url = self::SERVER_TEST.'/agents/service_point_locator';
-		} else {
-			$url = self::SERVER_PRODUCTION.'/agents/service_point_locator';
-		}
+		$url = self::API_BASE_URL.'/agents/service_point_locator';
 
 		$request = http_build_query($request, '', '&');
 
@@ -441,9 +413,11 @@ class Client {
 		}
 	}
 
-	private function _call(string $method, string $url, string $data = null, $headers = []) {
+	private function _call(string $method, string $url, string $data = '', $headers = []) {
 
-		$headers['User-Agent'] = 'Fraktjakt-Client-PHP/'.self::VERSION;
+		if (empty($headers['User-Agent'])) {
+			$headers['User-Agent'] = 'Fraktjakt-Client-PHP/'.self::VERSION;
+		}
 
 		if (!empty($data) && empty($headers['Content-Length'])) {
 			$headers['Content-Length'] = strlen($data);
